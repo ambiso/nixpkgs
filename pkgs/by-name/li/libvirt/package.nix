@@ -39,6 +39,7 @@
   xhtml1,
   json_c,
   writeScript,
+  writeShellApplication,
   nixosTests,
 
   # Linux
@@ -181,10 +182,22 @@ stdenv.mkDerivation rec {
     substituteInPlace src/libxl/libxl_capabilities.h \
      --replace-fail /usr/lib/xen ${xen}/libexec/xen
   ''
-  + ''
-    substituteInPlace src/secret/virt-secret-init-encryption.service.in \
-      --replace-fail /usr/bin/sh ${runtimeShell}
-  '';
+  + lib.optionalString isLinux (
+    let
+      script = writeShellApplication {
+        name = "virt-secret-init-encryption-sh";
+        runtimeInputs = [
+          coreutils
+          systemd
+        ];
+        text = ''exec ${runtimeShell} "$@"'';
+      };
+    in
+    ''
+      substituteInPlace src/secret/virt-secret-init-encryption.service.in \
+        --replace-fail /usr/bin/sh ${script}/bin/virt-secret-init-encryption-sh
+    ''
+  );
 
   strictDeps = true;
 
