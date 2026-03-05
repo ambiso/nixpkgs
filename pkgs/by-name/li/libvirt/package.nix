@@ -33,6 +33,7 @@
   python3,
   readline,
   rpcsvc-proto,
+  runtimeShell,
   stdenv,
   replaceVars,
   xhtml1,
@@ -179,6 +180,10 @@ stdenv.mkDerivation rec {
     sed -i '/libxlxml2domconfigtest/d' tests/meson.build
     substituteInPlace src/libxl/libxl_capabilities.h \
      --replace-fail /usr/lib/xen ${xen}/libexec/xen
+  ''
+  + ''
+    substituteInPlace src/secret/virt-secret-init-encryption.service.in \
+      --replace-fail /usr/bin/sh ${runtimeShell}
   '';
 
   strictDeps = true;
