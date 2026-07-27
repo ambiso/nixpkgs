@@ -541,6 +541,7 @@
   ./services/databases/ferretdb.nix
   ./services/databases/firebird.nix
   ./services/databases/foundationdb.nix
+  ./services/databases/greptimedb.nix
   ./services/databases/hbase-standalone.nix
   ./services/databases/influxdb2.nix
   ./services/databases/influxdb.nix
